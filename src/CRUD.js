@@ -1,9 +1,10 @@
 import React, { Fragment,useState, useEffect, useMemo } from 'react'
 import Table from 'react-bootstrap/Table';
 
-import { Button } from 'react-bootstrap';
+
 
 const CRUD = () => {
+  //The useMemo is employed to provide the caching of the below block in order to avoid recalculations over amd over...
     const empdata = useMemo(()=>[
 
         {
@@ -23,15 +24,16 @@ const CRUD = () => {
             id:3,
             name: 'Thaduku',
             age: 26,
-            isActive: 1,   
+            isActive: 0,   
         },
     ],[]);
    
-     const [data, setData] = useState([]);
+     const [data, setData] = useState([]); //The data is initially set to an empty array
 
+     //The UseEffect is employed to trigger the SetData function only when the [empdata] dependency changes
      useEffect(()=>{
-         setData(empdata);
-        },[empdata]);
+         setData(empdata); //this sets data to the value of the empdata mock API
+        },[empdata]);//This is the dependency  that triggers the UseEffect
    
         
   return (
