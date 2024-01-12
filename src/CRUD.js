@@ -5,7 +5,10 @@ import Modal from 'react-bootstrap/Modal';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Toast } from 'bootstrap';
 
 
 const CRUD = () => {
@@ -27,35 +30,24 @@ const CRUD = () => {
   const [editIsActive, SetEditIsActive] = useState (0);
   //The useMemo is employed to provide the caching of the below block in order to avoid recalculations over amd over...
   
-  const empdata = useMemo(()=>[
-    
-        {
-          id:1,
-          name: 'Pheletso',
-          age: 25,
-          isActive: 1,   
-        },
-        {
-          id:2,
-          name: 'Evans',
-          age: 26 ,
-          isActive: 1,    
-        },
-        
-        {
-          id:3,
-          name: 'Thaduku',
-          age: 24,
-          isActive: 0,   
-        },
-    ],[]);
+  
    
      const [data, setData] = useState([]); //The data is initially set to an empty array
 
      //The UseEffect is employed to trigger the SetData function only when the [empdata] dependency changes
      useEffect(()=>{
-         setData(empdata); //this sets data to the value of the empdata mock API
-        },[empdata]);//This is the dependency  that triggers the UseEffect
+         getData()
+        },[]);//This is the dependency  that triggers the UseEffect
+
+const getData =() => {
+
+   axios.get('https://localhost:7067/api/Employee').then((result) =>{
+    setData(result.data)
+   }).catch((error)=>{
+    console.log(error)
+   })
+
+}
 
      const HandleEdit = (id) =>{
          //alert(id);
@@ -71,13 +63,56 @@ const CRUD = () => {
      }  
       const handleUpdate = ()=>{
 
-      }  
+      } 
+      
+      const HandleSave = ()=>{
+        const url = 'https://localhost:7067/api/Employee';
+        const data =	 {
+          
+          "name": name,
+          "age": age,
+          "isActive": isActive
+        }
 
+        axios.post(url, data).then((result)=>{
+          getData();
+          clear();
+          toast.success('Employee has been Added');
+        })
+
+      }
+
+      const clear = ( ) =>{
+        setName ('');
+        setAge('');
+        SetIsActive(0);
+        setEditName('');
+        setEditAge('');
+        SetEditIsActive(0);
+        setEditId('')
+      }
+
+      const HandleActiveChange = (e) =>{
+             if(e.target.checked){
+              SetIsActive(1);
+             }
+             else{
+              SetIsActive(0);
+             }
+      }
+      const HandleActiveEditChange = (e) =>{
+             if(e.target.checked){
+              SetEditIsActive(1);
+             }
+             else{
+              SetEditIsActive(0);
+             }
+      }
   return (
     <div>
     {/* Basically Fragment is similar to using <></> in order to avoid manually adding elements to the DOM */}
      <Fragment> 
-
+     <ToastContainer />
      <Container>
       <br/>
       <Row>
@@ -96,11 +131,11 @@ const CRUD = () => {
         
         <input type='checkbox' 
        checked = {isActive === 1? true: false} 
-       onChange={(e)=> SetIsActive(e)} value ={isActive} />&nbsp;
+       onChange={(e)=> HandleActiveChange(e)} value ={isActive} />&nbsp;
         <label>IsActive</label>
         </Col>
         <Col>
-        <button  className='btn btn-primary'>submit</button>
+        <button  className='btn btn-primary' onClick={()=>HandleSave()}>submit</button>
         </Col>
       </Row>
       
@@ -174,12 +209,10 @@ const CRUD = () => {
         
         <input type='checkbox' 
        checked = {editIsActive === 1? true: false} 
-       onChange={(e)=> SetEditIsActive(e)} value ={editIsActive} />&nbsp;
+       onChange={(e)=> HandleActiveEditChange(e)} value ={editIsActive} />&nbsp;
         <label>IsActive</label>
         </Col>
-        <Col>
-        <button  className='btn btn-primary'>submit</button>
-        </Col>
+        
       </Row>
       
     </Container>
