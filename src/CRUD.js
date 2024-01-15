@@ -110,7 +110,7 @@ const getData =() => {
       }
   return (
     <div>
-    {/* Basically Fragment is similar to using <></> in order to avoid manually adding elements to the DOM */}
+    {/* Basically Fragment is similar to using <></y> in order to avoid manually adding elements to the DOM */}
      <Fragment> 
      <ToastContainer />
      <Container>
@@ -201,7 +201,7 @@ const getData =() => {
         <br />
         </Col>
         <Col>
-         <input type='number' className='form-control' placeholder='Enter Age' value={editAge}
+         <input type='text' className='form-control' placeholder='Enter Age' value={editAge}
           onChange={(e) => setEditAge(e.target.value)} />
         <br />
         </Col>
